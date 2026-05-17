@@ -2,6 +2,8 @@
 
 A monorepo for the **TwelveLabs Jockey** mini-series: set up a knowledge store, compare **Jockey 1.0** vs **Gemini** on video understanding, and explore use cases.
 
+**Repository:** [github.com/nathanchess/twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series)
+
 | Folder | Purpose |
 |--------|---------|
 | [`1-setup/`](1-setup/) | Python scripts to upload assets, create a knowledge store, ingest videos, and run CLI prompts |
@@ -42,8 +44,8 @@ Do **not** create a separate git repo inside `2-vllm-arena`. A single repo keeps
 ### 1. Clone and enter the repo
 
 ```powershell
-git clone https://github.com/YOUR_ORG/jockey-mini-series.git
-cd jockey-mini-series
+git clone https://github.com/nathanchess/twelvelabs-jockey-mini-series.git
+cd twelvelabs-jockey-mini-series
 ```
 
 ### 2. TwelveLabs setup (`1-setup`)
@@ -96,7 +98,7 @@ git status
 # Confirm .env, venv/, node_modules/, *.mp4, and preloaded_videos.json are NOT staged
 git commit -m "Initial commit: Jockey mini-series monorepo"
 git branch -M main
-git remote add origin https://github.com/YOUR_ORG/jockey-mini-series.git
+git remote add origin https://github.com/nathanchess/twelvelabs-jockey-mini-series.git
 git push -u origin main
 ```
 
@@ -125,7 +127,7 @@ Vercel supports **monorepos**: one GitHub repo, one project, app rooted at `2-vl
 
 ### 1. Import the repository
 
-1. [vercel.com/new](https://vercel.com/new) → Import your `jockey-mini-series` GitHub repo.
+1. [vercel.com/new](https://vercel.com/new) → Import [twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series).
 2. **Root Directory** → Edit → set to `2-vllm-arena` → Continue.
 3. Framework: **Next.js** (auto-detected).
 

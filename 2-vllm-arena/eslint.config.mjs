@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Strand design-system package + demo (not part of the Next.js app build)
+    "strand/**",
   ]),
 ]);
 

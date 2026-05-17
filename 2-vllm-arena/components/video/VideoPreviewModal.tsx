@@ -27,22 +27,19 @@ type VideoPreviewModalProps = {
   onClose: () => void;
 };
 
-export function VideoPreviewModal({ request, onClose }: VideoPreviewModalProps) {
+function VideoPreviewModalContent({
+  request,
+  onClose,
+}: {
+  request: VideoPreviewRequest;
+  onClose: () => void;
+}) {
   const [asset, setAsset] = useState<AssetPayload | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!request) {
-      setAsset(null);
-      setError(null);
-      return;
-    }
-
     let cancelled = false;
-    setLoading(true);
-    setError(null);
-    setAsset(null);
 
     fetch(`/api/assets/${encodeURIComponent(request.assetId)}`)
       .then((res) =>
@@ -63,7 +60,7 @@ export function VideoPreviewModal({ request, onClose }: VideoPreviewModalProps) 
     return () => {
       cancelled = true;
     };
-  }, [request]);
+  }, [request.assetId]);
 
   const handleBackdrop = useCallback(
     (e: React.MouseEvent) => {
@@ -73,15 +70,12 @@ export function VideoPreviewModal({ request, onClose }: VideoPreviewModalProps) 
   );
 
   useEffect(() => {
-    if (!request) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [request, onClose]);
-
-  if (!request) return null;
+  }, [onClose]);
 
   const startSeconds = request.start
     ? parseTimeToSeconds(request.start)
@@ -146,5 +140,16 @@ export function VideoPreviewModal({ request, onClose }: VideoPreviewModalProps) 
         </div>
       </div>
     </div>
+  );
+}
+
+export function VideoPreviewModal({ request, onClose }: VideoPreviewModalProps) {
+  if (!request) return null;
+  return (
+    <VideoPreviewModalContent
+      key={request.assetId}
+      request={request}
+      onClose={onClose}
+    />
   );
 }

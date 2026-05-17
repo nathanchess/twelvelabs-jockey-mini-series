@@ -3,32 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { StrandIcon } from "@/components/strand/StrandIcon";
+import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 
 const navItems = [
   { href: "/", label: "Overview", icon: "home" },
   { href: "/arena", label: "Arena", icon: "neural-network" },
 ] as const;
 
-const STORAGE_KEY = "vllm-arena-sidebar-collapsed";
-
 export function AppSidebar() {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored === "true") setCollapsed(true);
-  }, []);
-
-  function toggleCollapsed() {
-    setCollapsed((prev) => {
-      const next = !prev;
-      localStorage.setItem(STORAGE_KEY, String(next));
-      return next;
-    });
-  }
+  const { collapsed, toggleCollapsed } = useSidebarCollapsed();
 
   return (
     <aside

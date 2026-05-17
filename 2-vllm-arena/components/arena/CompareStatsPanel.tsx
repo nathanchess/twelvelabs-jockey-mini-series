@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { SideMetrics } from "@/hooks/useArenaChat";
 import { StrandIcon } from "@/components/strand/StrandIcon";
 import { estimateCost, formatMs, formatUsd } from "@/lib/pricing";
@@ -74,18 +74,11 @@ export function CompareStatsPanel({
   hasPrompted,
   jockeyVideoCount,
 }: CompareStatsPanelProps) {
-  const [expanded, setExpanded] = useState(false);
-  const [didAutoExpand, setDidAutoExpand] = useState(false);
+  const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
+  const expanded = expandedOverride ?? hasPrompted;
 
   const isLive =
     jockey.status === "streaming" || competitor.status === "streaming";
-
-  useEffect(() => {
-    if (hasPrompted && !didAutoExpand) {
-      setExpanded(true);
-      setDidAutoExpand(true);
-    }
-  }, [hasPrompted, didAutoExpand]);
 
   if (!hasPrompted) return null;
 
@@ -213,7 +206,9 @@ export function CompareStatsPanel({
     <section className="shrink-0 border-t border-border-light bg-surface">
       <button
         type="button"
-        onClick={() => setExpanded((v) => !v)}
+        onClick={() =>
+          setExpandedOverride((v) => !(v ?? hasPrompted))
+        }
         className="flex w-full items-center justify-between px-6 py-3 text-left transition-colors hover:bg-card/60"
         aria-expanded={expanded}
       >
