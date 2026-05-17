@@ -1,0 +1,37 @@
+# See root .gitignore for monorepo-wide rules (venv, secrets, *.mp4).
+# This file adds overrides specific to the Next.js app.
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# env
+.env
+.env.*
+!.env.example
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# gemini file API URIs (expire; regenerate with npm run preload-videos)
+api/gemini_prompt/preloaded_videos.json
+
+# local corpus videos (host in TwelveLabs / CDN for production)
+public/videos/*
+!public/videos/.gitkeep

@@ -1,0 +1,199 @@
+@import "../strand/css/fonts.css";
+@import "../strand/css/variables.css";
+@import "tailwindcss";
+
+:root {
+  --strand-background: #f4f3f3;
+  --strand-surface: #ffffff;
+  --strand-card: #ececec;
+  --strand-text-primary: #1d1c1b;
+  --strand-text-secondary: #6b6966;
+  --strand-text-tertiary: #9b9895;
+  --strand-text-inverse: #ffffff;
+  --strand-border: #d3d1cf;
+  --strand-border-light: #e8e7e5;
+  --strand-accent: #00dc82;
+  --strand-accent-hover: #00b86e;
+  --strand-accent-light: #e8f5e9;
+  --strand-gradient-brand: linear-gradient(
+    90deg,
+    #60e21b 0%,
+    #faba17 50%,
+    #ffb0cd 100%
+  );
+}
+
+.dark {
+  --strand-background: #1d1c1b;
+  --strand-surface: #2a2928;
+  --strand-card: #333231;
+  --strand-text-primary: #f4f3f3;
+  --strand-text-secondary: #9b9895;
+  --strand-text-tertiary: #6b6966;
+  --strand-text-inverse: #1d1c1b;
+  --strand-border: #45423f;
+  --strand-border-light: #333231;
+  --strand-accent: #00dc82;
+  --strand-accent-hover: #00b86e;
+  --strand-accent-light: #1a3d2a;
+}
+
+@theme inline {
+  --color-background: var(--strand-background);
+  --color-surface: var(--strand-surface);
+  --color-card: var(--strand-card);
+  --color-text-primary: var(--strand-text-primary);
+  --color-text-secondary: var(--strand-text-secondary);
+  --color-text-tertiary: var(--strand-text-tertiary);
+  --color-text-inverse: var(--strand-text-inverse);
+  --color-border: var(--strand-border);
+  --color-border-light: var(--strand-border-light);
+  --color-accent: var(--strand-accent);
+  --color-accent-hover: var(--strand-accent-hover);
+  --color-accent-light: var(--strand-accent-light);
+  --color-highlight: #60e21b;
+  --color-error: #e22622;
+  --color-warning: #faba17;
+  --color-success: #60e21b;
+  --color-info: #6cd5fd;
+  --color-destructive: #e22622;
+  --color-brand-green: #00ff00;
+  --color-brand-charcoal: #1d1c1b;
+  --color-brand-white: #f4f3f3;
+  --color-brand-grey: #d3d1cf;
+  --color-user-bg: #1d1c1b;
+  --color-user-text: #ffffff;
+  --color-product-generate: #faba17;
+  --color-product-generate-light: #fde3a2;
+  --font-system: "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-brand: "Milling Duplex 1mm", "Noto Sans", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --text-h1: 48px;
+  --text-h5: 20px;
+  --text-lg: 16px;
+  --text-base: 14px;
+  --text-sm: 12px;
+  --text-xs: 10px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+}
+
+@layer base {
+  html {
+    @apply h-full;
+  }
+
+  body {
+    @apply min-h-full bg-surface font-system text-base text-text-primary antialiased;
+  }
+}
+
+@layer components {
+  .text-header {
+    @apply font-system font-medium tracking-normal text-text-primary;
+  }
+
+  .text-header-lg {
+    @apply font-system text-xl font-medium tracking-tight text-text-primary;
+  }
+
+  .text-section-label {
+    @apply font-system text-xs font-medium uppercase tracking-[0.14em] text-text-tertiary;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes blink-cursor {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .asset-ref-link {
+    @apply inline rounded-sm px-0.5 text-left font-medium text-accent underline decoration-accent/40 underline-offset-2;
+    transition:
+      color 0.2s ease,
+      background-color 0.2s ease,
+      transform 0.2s ease,
+      text-decoration-color 0.2s ease;
+  }
+
+  .asset-ref-link:hover {
+    @apply bg-accent-light text-accent-hover decoration-accent;
+    transform: translateY(-1px);
+  }
+
+  .asset-ref-link:active {
+    transform: translateY(0);
+  }
+
+  .streaming-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background-color: var(--strand-text-primary);
+    animation: blink-cursor 1s step-end infinite;
+  }
+
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.28s ease-out forwards;
+  }
+
+  .video-cards-stagger > * {
+    animation: fade-in-up 0.32s ease-out forwards;
+    opacity: 0;
+  }
+
+  .rainbow-input-wrap {
+    border-radius: 9999px;
+    padding: 2px;
+    background: var(--strand-border-light);
+    transition: background 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .rainbow-input-wrap:focus-within {
+    background: var(--strand-gradient-brand);
+    box-shadow: 0 2px 12px rgba(96, 226, 27, 0.12);
+  }
+
+  .rainbow-input-wrap input {
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
+
+  .rainbow-input-wrap:focus-within input {
+    box-shadow: none;
+  }
+}
