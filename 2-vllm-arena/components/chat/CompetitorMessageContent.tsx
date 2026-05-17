@@ -1,29 +1,31 @@
 "use client";
 
 import type { CorpusVideo } from "@/lib/corpora";
+import { CorpusVideoSurface } from "@/components/video/CorpusVideoSurface";
 import { StreamingCursor } from "@/components/chat/StreamingCursor";
 
 type CompetitorMessageContentProps = {
   content: string;
   sourceVideo?: CorpusVideo;
+  sourcePlaybackAssetId?: string;
   streaming?: boolean;
 };
 
 export function CompetitorMessageContent({
   content,
   sourceVideo,
+  sourcePlaybackAssetId,
   streaming,
 }: CompetitorMessageContentProps) {
   return (
     <div className="space-y-3">
-      {sourceVideo ? (
+      {sourceVideo && sourcePlaybackAssetId ? (
         <div className="overflow-hidden rounded-lg border border-border bg-card">
-          <video
-            src={sourceVideo.src}
+          <CorpusVideoSurface
+            playbackAssetId={sourcePlaybackAssetId}
             className="aspect-video w-full min-h-[220px] max-h-[280px] bg-black object-cover"
             muted
             playsInline
-            preload="metadata"
             controls
           />
           <div className="border-t border-border px-3 py-2">

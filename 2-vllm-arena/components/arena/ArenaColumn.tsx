@@ -18,6 +18,7 @@ type ArenaColumnProps = {
   videoTitleMap?: VideoTitleMap;
   assetIdMap?: AssetIdMap;
   geminiSourceVideo?: CorpusVideo;
+  geminiSourcePlaybackAssetId?: string;
   scopeNote?: string;
   modelSelect?: {
     options: SelectOption[];
@@ -35,6 +36,7 @@ export function ArenaColumn({
   videoTitleMap,
   assetIdMap,
   geminiSourceVideo,
+  geminiSourcePlaybackAssetId,
   scopeNote,
   modelSelect,
 }: ArenaColumnProps) {
@@ -101,6 +103,9 @@ export function ArenaColumn({
               assetIdMap={side === "jockey" ? assetIdMap : undefined}
               geminiSourceVideo={
                 side === "competitor" ? geminiSourceVideo : undefined
+              }
+              geminiSourcePlaybackAssetId={
+                side === "competitor" ? geminiSourcePlaybackAssetId : undefined
               }
             />
           ))

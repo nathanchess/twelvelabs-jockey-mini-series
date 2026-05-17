@@ -11,6 +11,7 @@ import { corpora, defaultCorpusId } from "@/lib/corpora";
 import {
   defaultGeminiCorpusVideo,
   findCorpusVideoByFilename,
+  lookupCorpusPlaybackAssetId,
 } from "@/lib/corpus-video";
 import { formatGeminiScopeNote } from "@/lib/gemini-scope";
 import {
@@ -60,10 +61,15 @@ export default function ArenaPage() {
     return defaultGeminiCorpusVideo();
   }, [competitorVideoScope]);
 
+  const geminiSourcePlaybackAssetId = useMemo(() => {
+    if (!geminiSourceVideo) return undefined;
+    return lookupCorpusPlaybackAssetId(geminiSourceVideo, assetIdMap);
+  }, [geminiSourceVideo, assetIdMap]);
+
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <div className="shrink-0">
-        <VideoCorpusBar />
+        <VideoCorpusBar assetIdMap={assetIdMap} />
       </div>
 
       <div className="grid min-h-0 flex-1 grid-cols-2 divide-x divide-border overflow-hidden">
@@ -80,6 +86,7 @@ export default function ArenaPage() {
           messages={competitorMessages}
           scopeNote={geminiScopeNote}
           geminiSourceVideo={geminiSourceVideo}
+          geminiSourcePlaybackAssetId={geminiSourcePlaybackAssetId}
           modelSelect={{
             options: competitorModels.map((m) => ({
               id: m.id,

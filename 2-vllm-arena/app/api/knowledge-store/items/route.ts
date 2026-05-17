@@ -12,6 +12,48 @@ type KnowledgeStoreItem = {
   metadata?: { title?: string; name?: string };
 };
 
+type AssetResponse = {
+  filename?: string;
+};
+
+function mapAssetIdKeys(
+  assetIdMap: Record<string, string>,
+  playbackAssetId: string,
+  ...keys: (string | undefined)[]
+) {
+  for (const key of keys) {
+    if (!key) continue;
+    assetIdMap[key] = playbackAssetId;
+    assetIdMap[key.toLowerCase()] = playbackAssetId;
+  }
+}
+
+async function mapAssetFilenames(
+  assetIdMap: Record<string, string>,
+  assetIds: string[]
+) {
+  const uniqueIds = [...new Set(assetIds.filter((id) => /^[a-f0-9]{24}$/i.test(id)))];
+
+  await Promise.all(
+    uniqueIds.map(async (assetId) => {
+      try {
+        const response = await fetch(`${BASE_URL}/assets/${encodeURIComponent(assetId)}`, {
+          headers: HEADERS,
+        });
+        if (!response.ok) return;
+
+        const asset = (await response.json()) as AssetResponse;
+        const filename = asset.filename?.trim();
+        if (!filename) return;
+
+        mapAssetIdKeys(assetIdMap, assetId, filename);
+      } catch {
+        /* filename mapping is best-effort */
+      }
+    })
+  );
+}
+
 export async function GET() {
   if (!process.env.TL_API_KEY) {
     return Response.json(
@@ -79,11 +121,20 @@ export async function GET() {
     for (const key of keys) {
       titleMap[key] = displayTitle;
       if (playbackAssetId) {
-        assetIdMap[key] = playbackAssetId;
-        assetIdMap[key.toLowerCase()] = playbackAssetId;
+        mapAssetIdKeys(assetIdMap, playbackAssetId, key);
       }
     }
+
+    if (playbackAssetId) {
+      mapAssetIdKeys(assetIdMap, playbackAssetId, displayTitle);
+    }
   }
+
+  const playbackAssetIds = (body.data ?? [])
+    .map((item) => item.asset_id)
+    .filter((id): id is string => typeof id === "string");
+
+  await mapAssetFilenames(assetIdMap, playbackAssetIds);
 
   return Response.json({ titleMap, assetIdMap, videoCount: body.data?.length ?? 0 });
 }

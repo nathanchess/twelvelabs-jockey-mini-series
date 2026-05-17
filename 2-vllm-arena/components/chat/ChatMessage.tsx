@@ -14,6 +14,7 @@ type ChatMessageProps = {
   videoTitleMap?: VideoTitleMap;
   assetIdMap?: AssetIdMap;
   geminiSourceVideo?: CorpusVideo;
+  geminiSourcePlaybackAssetId?: string;
 };
 
 export function ChatMessage({
@@ -22,6 +23,7 @@ export function ChatMessage({
   videoTitleMap = {},
   assetIdMap = {},
   geminiSourceVideo,
+  geminiSourcePlaybackAssetId,
 }: ChatMessageProps) {
   if (message.role === "user") {
     return (
@@ -48,10 +50,11 @@ export function ChatMessage({
             assetIdMap={assetIdMap}
             streaming={message.streaming}
           />
-        ) : geminiSourceVideo ? (
+        ) : geminiSourceVideo && geminiSourcePlaybackAssetId ? (
           <CompetitorMessageContent
             content={message.content}
             sourceVideo={geminiSourceVideo}
+            sourcePlaybackAssetId={geminiSourcePlaybackAssetId}
             streaming={message.streaming}
           />
         ) : (

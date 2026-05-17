@@ -175,6 +175,19 @@
     opacity: 0;
   }
 
+  /* Corpus card hover preview: no native control chrome (PiP, captions, etc.) */
+  .video-card-preview {
+    pointer-events: none;
+  }
+
+  .video-card-preview::-webkit-media-controls {
+    display: none !important;
+  }
+
+  .video-card-preview::-webkit-media-controls-enclosure {
+    display: none !important;
+  }
+
   .rainbow-input-wrap {
     border-radius: 9999px;
     padding: 2px;

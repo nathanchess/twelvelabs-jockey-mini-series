@@ -7,13 +7,24 @@ import {
   defaultCorpusId,
   type Corpus,
 } from "@/lib/corpora";
+import { lookupCorpusPlaybackAssetId } from "@/lib/corpus-video";
+import type { AssetIdMap } from "@/lib/asset-id-map";
 import { MinimalSelect } from "@/components/strand/MinimalSelect";
 import { StrandIcon } from "@/components/strand/StrandIcon";
 import { VideoCard } from "./VideoCard";
+import {
+  VideoPreviewModal,
+  type VideoPreviewRequest,
+} from "@/components/video/VideoPreviewModal";
 
-export function VideoCorpusBar() {
+type VideoCorpusBarProps = {
+  assetIdMap: AssetIdMap;
+};
+
+export function VideoCorpusBar({ assetIdMap }: VideoCorpusBarProps) {
   const [corpusId, setCorpusId] = useState(defaultCorpusId);
   const [expanded, setExpanded] = useState(false);
+  const [preview, setPreview] = useState<VideoPreviewRequest | null>(null);
   const corpus: Corpus = corpora[corpusId] ?? corpora[defaultCorpusId];
 
   return (
@@ -55,17 +66,46 @@ export function VideoCorpusBar() {
             key={expanded ? `videos-${corpusId}` : "videos-collapsed"}
             className="video-cards-stagger flex gap-4 overflow-x-auto pb-2"
           >
-            {corpus.videos.map((video, index) => (
-              <div
-                key={video.id}
-                style={{ animationDelay: `${index * 55}ms` }}
-              >
-                <VideoCard video={video} />
-              </div>
-            ))}
+            {corpus.videos.map((video, index) => {
+              const playbackAssetId = lookupCorpusPlaybackAssetId(
+                video,
+                assetIdMap
+              );
+
+              return (
+                <div
+                  key={video.id}
+                  style={{ animationDelay: `${index * 55}ms` }}
+                >
+                  {playbackAssetId ? (
+                    <VideoCard
+                      video={video}
+                      playbackAssetId={playbackAssetId}
+                      onOpenPreview={() =>
+                        setPreview({
+                          assetId: playbackAssetId,
+                          title: video.title,
+                        })
+                      }
+                    />
+                  ) : (
+                    <article className="w-[220px] shrink-0">
+                      <div className="flex aspect-video items-center justify-center rounded-xl bg-card px-2 text-center text-xs text-text-tertiary">
+                        No TwelveLabs asset for this clip
+                      </div>
+                      <p className="mt-2 line-clamp-2 text-sm text-text-primary">
+                        {video.title}
+                      </p>
+                    </article>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
+
+      <VideoPreviewModal request={preview} onClose={() => setPreview(null)} />
     </section>
   );
 }
