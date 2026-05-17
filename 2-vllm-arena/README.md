@@ -2,7 +2,7 @@
 
 Next.js app that compares **TwelveLabs Jockey 1.0** (knowledge-store RAG) and **Google Gemini** on the same soccer video corpus in a side-by-side arena UI.
 
-Part of the [jockey-mini-series](../README.md) monorepo. Deploy this folder to Vercel with **Root Directory** = `2-vllm-arena`.
+Part of the [twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series) monorepo. Deploy this folder to Vercel with **Root Directory** = `2-vllm-arena`.
 
 ---
 
@@ -124,7 +124,7 @@ All keys stay server-side; nothing sensitive is exposed to the browser bundle.
 
 ## Deploy on Vercel (from monorepo)
 
-1. Push the parent repo [`jockey-mini-series`](../README.md) to GitHub.
+1. Push the parent repo [twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series) to GitHub.
 2. Vercel → New Project → import repo.
 3. Set **Root Directory** to `2-vllm-arena`.
 4. Add environment variables (`TL_API_KEY`, `KNOWLEDGE_STORE_ID`, `GEMINI_API_KEY`).
