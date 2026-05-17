@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "vLLM Arena | TwelveLabs",
+  title: "Jockey Arena | TwelveLabs",
   description:
     "Compare TwelveLabs Jockey against market video-language models on shared corpora.",
 };
