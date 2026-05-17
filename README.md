@@ -128,8 +128,13 @@ Vercel supports **monorepos**: one GitHub repo, one project, app rooted at `2-vl
 ### 1. Import the repository
 
 1. [vercel.com/new](https://vercel.com/new) → Import [twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series).
-2. **Root Directory** → Edit → set to `2-vllm-arena` → Continue.
+2. **Root Directory** → Edit → set to `2-vllm-arena` → Continue.  
+   This step is required. The repo root has no `package.json`; deploying from `/` causes a Vercel `404: NOT_FOUND` page.
 3. Framework: **Next.js** (auto-detected).
+4. **Build & Development Settings** (leave defaults unless you changed them before):
+   - Build Command: `npm run build` (or empty → default)
+   - Output Directory: **leave empty** (do not set `.next` or `out` — that also causes `404: NOT_FOUND`)
+   - Install Command: `npm install` (or empty → default)
 
 ### 2. Environment variables
 
@@ -159,7 +164,18 @@ For most workshops, **A** or re-running preload before deploy is enough.
 
 Push to `main` — Vercel builds from `2-vllm-arena` automatically.
 
-Optional: add `2-vllm-arena/vercel.json` only if you need custom headers or redirects; default settings are fine for Next.js 16.
+`2-vllm-arena/vercel.json` pins the framework to Next.js for this subdirectory.
+
+### Fix `404: NOT_FOUND` (Code: NOT_FOUND)
+
+If you see Vercel’s plain **404: NOT_FOUND** page (not the app’s UI):
+
+1. **Settings → General → Root Directory** must be `2-vllm-arena` (then redeploy).
+2. **Settings → General → Output Directory** must be **empty** for Next.js.
+3. Open the latest deployment → **Build Logs** — confirm `next build` succeeded.
+4. Use the deployment URL from that successful build (not an old or deleted preview link).
+
+To fix an existing project: Settings → General → Root Directory → `2-vllm-arena` → Save → Deployments → Redeploy.
 
 ### 5. Videos in production
 

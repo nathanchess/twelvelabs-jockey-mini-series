@@ -126,12 +126,15 @@ All keys stay server-side; nothing sensitive is exposed to the browser bundle.
 
 1. Push the parent repo [twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series) to GitHub.
 2. Vercel → New Project → import repo.
-3. Set **Root Directory** to `2-vllm-arena`.
-4. Add environment variables (`TL_API_KEY`, `KNOWLEDGE_STORE_ID`, `GEMINI_API_KEY`).
-5. Plan for `preloaded_videos.json` (see parent README — preload locally or in build; URIs expire).
+3. Set **Root Directory** to `2-vllm-arena` (required — repo root has no Next.js app).
+4. Leave **Output Directory** empty (do not set `.next`).
+5. Add environment variables (`TL_API_KEY`, `KNOWLEDGE_STORE_ID`, `GEMINI_API_KEY`).
+6. Plan for `preloaded_videos.json` (see parent README — preload locally or in build; URIs expire).
 
-Build command (default): `next build`  
-Output: Next.js default
+If you get **404: NOT_FOUND** from Vercel, see [Fix 404 in the monorepo README](../README.md#fix-404-not_found-code-not_found).
+
+Build command (default): `npm run build`  
+Output: Next.js default (managed by Vercel)
 
 ---
 
