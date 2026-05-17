@@ -48,9 +48,6 @@ next-env.d.ts
 *.mkv
 !**/public/videos/.gitkeep
 
-# Gemini upload cache (regenerate with npm run preload-videos)
-2-vllm-arena/api/gemini_prompt/preloaded_videos.json
-
 # TwelveLabs local upload folder (1-setup)
 1-setup/library/
 

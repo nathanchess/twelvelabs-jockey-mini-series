@@ -1,0 +1,32 @@
+[
+  {
+    "name": "videoplayback (1).mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/3gagrq19lgno",
+    "mimeType": "video/mp4"
+  },
+  {
+    "name": "videoplayback (2).mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/0lxamdqlb3xx",
+    "mimeType": "video/mp4"
+  },
+  {
+    "name": "videoplayback (3).mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/94b1ju9k1ynj",
+    "mimeType": "video/mp4"
+  },
+  {
+    "name": "videoplayback (4).mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/64vetdypdwnj",
+    "mimeType": "video/mp4"
+  },
+  {
+    "name": "videoplayback (5).mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/mv1am0nh9qok",
+    "mimeType": "video/mp4"
+  },
+  {
+    "name": "videoplayback.mp4",
+    "uri": "https://generativelanguage.googleapis.com/v1beta/files/xsbuavhnebfa",
+    "mimeType": "video/mp4"
+  }
+]

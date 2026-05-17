@@ -29,9 +29,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# gemini file API URIs (expire; regenerate with npm run preload-videos)
-api/gemini_prompt/preloaded_videos.json
-
 # local corpus videos (host in TwelveLabs / CDN for production)
 public/videos/*
 !public/videos/.gitkeep
