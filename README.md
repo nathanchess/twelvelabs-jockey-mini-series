@@ -1,6 +1,6 @@
 # Jockey Mini-Series
 
-A monorepo for the **TwelveLabs Jockey** mini-series: set up a knowledge store, compare **Jockey 1.0** vs **Gemini** on video understanding, and explore use cases.
+A monorepo for the **TwelveLabs Jockey** mini-series: set up a knowledge store, compare **Jockey** vs **Gemini** on video understanding, and explore use cases.
 
 **Repository:** [github.com/nathanchess/twelvelabs-jockey-mini-series](https://github.com/nathanchess/twelvelabs-jockey-mini-series)
 
