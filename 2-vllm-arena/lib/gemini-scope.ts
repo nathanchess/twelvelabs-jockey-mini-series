@@ -15,6 +15,13 @@ export function formatGeminiScopeNote(scope: CompetitorVideoScope): string {
 export function parseCompetitorError(raw: string): string {
   const lower = raw.toLowerCase();
   if (
+    lower.includes("expired") ||
+    lower.includes("no longer available") ||
+    (lower.includes("file") && lower.includes("not found"))
+  ) {
+    return "Gemini's uploaded video file expired. The arena will re-upload automatically on the next prompt — try sending your question again.";
+  }
+  if (
     lower.includes("token count exceeds") ||
     lower.includes("1048576") ||
     lower.includes("maximum number of tokens")

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SeriesLearningSection } from "@/components/series/SeriesLearningSection";
 import { StrandButton } from "@/components/strand/StrandButton";
 import { StrandIcon } from "@/components/strand/StrandIcon";
 
@@ -55,18 +56,7 @@ export default function OverviewPage() {
         </div>
       </div>
 
-      <section className="flex min-h-0 flex-1 flex-col px-8 pb-10">
-        <p className="mb-3 text-sm text-text-secondary">
-          Full application walkthrough
-        </p>
-        <div className="relative min-h-[min(52vh,720px)] w-full flex-1 overflow-hidden rounded-xl border border-border-light bg-gradient-to-br from-accent-light via-product-generate-light to-surface">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-surface/90 shadow-md">
-              <StrandIcon name="play" className="h-8 w-8 text-text-primary" />
-            </div>
-          </div>
-        </div>
-      </section>
+      <SeriesLearningSection />
     </div>
   );
 }

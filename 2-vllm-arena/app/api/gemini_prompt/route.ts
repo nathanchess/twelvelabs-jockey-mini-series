@@ -1,23 +1,23 @@
 import { GoogleGenAI, createPartFromUri } from "@google/genai";
-import fs from "fs";
-import path from "path";
+import {
+  ensureDefaultGeminiCorpusVideo,
+  ensureGeminiFile,
+  isGeminiFileExpiredError,
+  type GeminiCachedFile,
+} from "@/lib/gemini-files";
 
-const PRELOADED_PATH = path.join(
-  process.cwd(),
-  "api",
-  "gemini_prompt",
-  "preloaded_videos.json"
-);
+async function streamGeminiResponse(
+  client: GoogleGenAI,
+  activeVideo: GeminiCachedFile,
+  prompt: string
+) {
+  const parts = [createPartFromUri(activeVideo.uri, activeVideo.mimeType)];
+  parts.push({ text: prompt });
 
-function loadPreloadedVideos() {
-  if (!fs.existsSync(PRELOADED_PATH)) {
-    return null;
-  }
-  return JSON.parse(fs.readFileSync(PRELOADED_PATH, "utf8")) as Array<{
-    name: string;
-    uri: string;
-    mimeType: string;
-  }>;
+  return client.models.generateContentStream({
+    model: "gemini-2.5-flash",
+    contents: [{ role: "user", parts }],
+  });
 }
 
 export async function POST(request: Request) {
@@ -26,18 +26,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         error:
-          "Missing GEMINI_API_KEY. Run npm run preload-videos after setting your key.",
-      },
-      { status: 500 }
-    );
-  }
-
-  const preloaded = loadPreloadedVideos();
-  if (!preloaded?.length) {
-    return Response.json(
-      {
-        error:
-          "No preloaded videos found. Run npm run preload-videos to upload corpus videos to Gemini.",
+          "Missing GEMINI_API_KEY. Add your Google AI Studio key to .env.",
       },
       { status: 500 }
     );
@@ -50,27 +39,47 @@ export async function POST(request: Request) {
 
   const googleClient = new GoogleGenAI({ apiKey });
 
-  // Gemini cannot ingest the full corpus (token limit); send one video only.
-  const activeVideo = preloaded[0];
-  const parts = [createPartFromUri(activeVideo.uri, activeVideo.mimeType)];
-  parts.push({ text: prompt });
+  let activeVideo: GeminiCachedFile;
+  let totalVideos = 1;
+
+  try {
+    const resolved = await ensureDefaultGeminiCorpusVideo(googleClient);
+    activeVideo = resolved.active;
+    totalVideos = resolved.total;
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Could not prepare Gemini video upload.";
+    return Response.json({ error: message }, { status: 500 });
+  }
 
   let stream: AsyncIterable<{ text?: string }>;
   try {
-    stream = await googleClient.models.generateContentStream({
-      model: "gemini-2.5-flash",
-      contents: [{ role: "user", parts }],
-    });
+    stream = await streamGeminiResponse(googleClient, activeVideo, prompt);
   } catch (e) {
-    const message =
-      e instanceof Error ? e.message : "Gemini request failed";
-    return Response.json({ error: message }, { status: 502 });
+    const message = e instanceof Error ? e.message : "Gemini request failed";
+
+    if (isGeminiFileExpiredError(message)) {
+      try {
+        activeVideo = await ensureGeminiFile(googleClient, activeVideo.localPath, {
+          force: true,
+        });
+        stream = await streamGeminiResponse(googleClient, activeVideo, prompt);
+      } catch (retryError) {
+        const retryMessage =
+          retryError instanceof Error
+            ? retryError.message
+            : "Gemini request failed after re-upload.";
+        return Response.json({ error: retryMessage }, { status: 502 });
+      }
+    } else {
+      return Response.json({ error: message }, { status: 502 });
+    }
   }
 
   const encoder = new TextEncoder();
   const scopeHeaders = {
     "X-Gemini-Videos-Used": "1",
-    "X-Gemini-Videos-Total": String(preloaded.length),
+    "X-Gemini-Videos-Total": String(totalVideos),
     "X-Gemini-Video-Label": activeVideo.name,
   };
 

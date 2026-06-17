@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "preload-videos": "node api/gemini_prompt/preload_videos.mjs",
-    "preload-videos:fresh": "node api/gemini_prompt/preload_videos.mjs --fresh"
+    "preload-videos:fresh": "node api/gemini_prompt/preload_videos.mjs --fresh",
+    "download-series-videos": "node scripts/download-series-videos.mjs"
   },
   "dependencies": {
     "@google/genai": "^2.3.0",
@@ -25,6 +26,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "youtube-dl-exec": "^3.1.7"
   }
 }

@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const project_root = path.join(__dirname, '../..')
 const videos_folder_path = path.join(project_root, 'public/videos')
 const output_path = path.join(__dirname, 'preloaded_videos.json')
+const forceFresh = process.argv.includes('--fresh')
 
 loadEnvFile(path.join(project_root, '.env'))
 
@@ -38,6 +39,22 @@ function loadEnvFile(envPath) {
   }
 }
 
+function loadCache() {
+  if (!fs.existsSync(output_path)) return []
+  try {
+    return JSON.parse(fs.readFileSync(output_path, 'utf8'))
+  } catch {
+    return []
+  }
+}
+
+function isFresh(entry) {
+  if (!entry?.expiresAt) return false
+  const expiresAt = Date.parse(entry.expiresAt)
+  if (!Number.isFinite(expiresAt)) return false
+  return Date.now() < expiresAt - 60 * 60 * 1000
+}
+
 async function waitUntilActive(file) {
   let current = file
   while (current.state === 'PROCESSING') {
@@ -50,22 +67,51 @@ async function waitUntilActive(file) {
   return current
 }
 
-async function preload_videos(local_paths) {
-  const file_data = []
-  for (const local_path of local_paths) {
-    console.log(`Uploading ${path.basename(local_path)}...`)
-    const uploaded = await google_client.files.upload({
-      file: local_path,
-      config: { mimeType: 'video/mp4' },
-    })
-    const file = await waitUntilActive(uploaded)
-    file_data.push({
-      name: path.basename(local_path),
-      uri: file.uri,
-      mimeType: file.mimeType,
-    })
-    console.log(`Ready: ${path.basename(local_path)}`)
+function toCacheEntry(local_path, file) {
+  return {
+    name: path.basename(local_path),
+    uri: file.uri,
+    mimeType: file.mimeType,
+    localPath: path.resolve(local_path),
+    fileResourceName: file.name,
+    uploadedAt: new Date().toISOString(),
+    expiresAt:
+      file.expirationTime ??
+      new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString(),
   }
+}
+
+async function uploadVideo(local_path) {
+  console.log(`Uploading ${path.basename(local_path)}...`)
+  const uploaded = await google_client.files.upload({
+    file: local_path,
+    config: { mimeType: 'video/mp4' },
+  })
+  const file = await waitUntilActive(uploaded)
+  const entry = toCacheEntry(local_path, file)
+  console.log(`Ready: ${path.basename(local_path)}`)
+  return entry
+}
+
+async function preload_videos(local_paths) {
+  const existing = forceFresh ? [] : loadCache()
+  const file_data = []
+
+  for (const local_path of local_paths) {
+    const resolved = path.resolve(local_path)
+    const cached = existing.find(
+      (entry) => path.resolve(entry.localPath ?? '') === resolved
+    )
+
+    if (!forceFresh && cached && isFresh(cached)) {
+      console.log(`Skipping fresh upload: ${path.basename(local_path)}`)
+      file_data.push(cached)
+      continue
+    }
+
+    file_data.push(await uploadVideo(local_path))
+  }
+
   return file_data
 }
 
@@ -79,6 +125,7 @@ const local_paths = fs
   .readdirSync(videos_folder_path)
   .filter((name) => name.toLowerCase().endsWith('.mp4'))
   .map((name) => path.join(videos_folder_path, name))
+  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
 
 if (local_paths.length === 0) {
   throw new Error(`No .mp4 files in ${videos_folder_path}`)
