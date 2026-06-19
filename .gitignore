@@ -47,6 +47,7 @@ next-env.d.ts
 *.webm
 *.mkv
 !**/public/videos/.gitkeep
+!2-vllm-arena/public/series/*.mp4
 
 # TwelveLabs local upload folder (1-setup)
 1-setup/library/
@@ -70,6 +71,10 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# ytdl-core debug dumps (YouTube player JS, not project code)
+*-player-script.js
+*-base.js
 
 # --- Certs ---
 *.pem
