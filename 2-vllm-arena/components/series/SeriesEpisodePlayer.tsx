@@ -3,6 +3,7 @@
 import { CustomVideoPlayer } from "@/components/video/CustomVideoPlayer";
 import {
   youtubeThumbnailUrl,
+  youtubeWatchUrl,
   type SeriesEpisode,
 } from "@/lib/series-episodes";
 
@@ -24,6 +25,7 @@ export function SeriesEpisodePlayer({
       poster={youtubeThumbnailUrl(episode.youtubeId)}
       title={episode.title}
       episodeLabel={`Episode ${episode.number}`}
+      fallbackHref={youtubeWatchUrl(episode.youtubeId)}
       onPlayStart={onStarted}
       onEnded={onEnded}
     />

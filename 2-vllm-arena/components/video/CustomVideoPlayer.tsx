@@ -21,6 +21,7 @@ type CustomVideoPlayerProps = {
   poster?: string;
   title?: string;
   episodeLabel?: string;
+  fallbackHref?: string;
   className?: string;
   onPlayStart?: () => void;
   onEnded?: () => void;
@@ -57,6 +58,7 @@ export function CustomVideoPlayer({
   poster,
   title,
   episodeLabel,
+  fallbackHref,
   className = "",
   onPlayStart,
   onEnded,
@@ -74,6 +76,7 @@ export function CustomVideoPlayer({
   const [showControls, setShowControls] = useState(true);
   const [scrubbing, setScrubbing] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const hideControlsTimer = useRef<number | null>(null);
 
@@ -180,6 +183,7 @@ export function CustomVideoPlayer({
     setCurrentTime(0);
     setDuration(0);
     setHasStarted(false);
+    setLoadError(null);
     setShowControls(true);
   }, [src]);
 
@@ -289,8 +293,30 @@ export function CustomVideoPlayer({
           setShowControls(true);
           onEnded?.();
         }}
-        onClick={() => void togglePlay()}
+        onError={() => {
+          setIsLoading(false);
+          setPlaying(false);
+          setLoadError("This video file could not be loaded.");
+        }}
+        onClick={() => !loadError && void togglePlay()}
       />
+
+      {loadError ? (
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-brand-charcoal/90 px-6 text-center">
+          <p className="text-sm text-text-inverse/90">{loadError}</p>
+          {fallbackHref ? (
+            <a
+              href={fallbackHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-lg border border-text-inverse/25 bg-surface px-3 py-2 text-sm font-medium text-text-primary transition-colors hover:bg-card"
+            >
+              Watch on YouTube
+              <StrandIcon name="arrow-diagonal" className="h-3.5 w-3.5" />
+            </a>
+          ) : null}
+        </div>
+      ) : null}
 
       {!playing && isLoading ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-brand-charcoal/50">
@@ -317,7 +343,7 @@ export function CustomVideoPlayer({
         </div>
       ) : null}
 
-      {!playing && !isLoading ? (
+      {!playing && !isLoading && !loadError ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <button
             type="button"

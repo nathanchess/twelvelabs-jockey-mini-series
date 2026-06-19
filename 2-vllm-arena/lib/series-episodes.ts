@@ -25,7 +25,8 @@ export const SERIES_EPISODES: SeriesEpisode[] = [
     id: "getting-started",
     number: 1,
     youtubeId: "ve5vVFJixLI",
-    videoSrc: "/series/episode-1.mp4",
+    videoSrc:
+      process.env.NEXT_PUBLIC_SERIES_EPISODE_1_URL ?? "/series/episode-1.mp4",
     title: "Getting Started with TwelveLabs Jockey",
     summary:
       "Move from raw video files to an intelligent, queryable dataset. Learn Knowledge Store fundamentals, asset uploads, and how multimodal agents process visual and audio information—without boilerplate.",
@@ -63,7 +64,8 @@ export const SERIES_EPISODES: SeriesEpisode[] = [
     id: "jockey-vs-vllm",
     number: 2,
     youtubeId: "ifCxoLyCVbg",
-    videoSrc: "/series/episode-2.mp4",
+    videoSrc:
+      process.env.NEXT_PUBLIC_SERIES_EPISODE_2_URL ?? "/series/episode-2.mp4",
     title: "Jockey vs. Standard VLMs",
     summary:
       "Side-by-side benchmark of Jockey against generic vision LLMs. Compare inference quality, throughput, token output, and pricing—and see how much less code a purpose-built video agent requires.",
